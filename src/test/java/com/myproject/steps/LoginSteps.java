@@ -1,34 +1,28 @@
 package com.myproject.steps;
 
-import com.myproject.pages.LoginPage;
+import com.myproject.context.Pages;
+import com.myproject.context.TestContext;
 import com.myproject.utils.AllureUtils;
 import com.myproject.utils.DriverManager;
 import com.myproject.utils.ExtentTestManager;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
-import jdk.internal.net.http.common.Log;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
-import javax.swing.event.TableModelListener;
-import java.io.ByteArrayInputStream;
 
 public class LoginSteps {
 
     private DriverManager driverManager;
     private WebDriver driver;
-    private LoginPage loginPage;
-    private LoginPage dashboardPage;
     private final ExtentTestManager extentTestManager;
+    private final Pages pages;
 
 
-    public LoginSteps(DriverManager driverManager, ExtentTestManager extentTestManager) {
-        this.driver = driverManager.getDriver();
-        this.extentTestManager = extentTestManager;
-        this.loginPage = new LoginPage(driver);
-        this.dashboardPage = new LoginPage(driver);
+    public LoginSteps(TestContext testContext) {
+        this.extentTestManager = testContext.getExtentTestManager();
+        this.pages = testContext.getPages();
     }
 
     @When("User logs in with username {string} and password {string}")
@@ -40,7 +34,7 @@ public class LoginSteps {
         Allure.addAttachment("Login Attempt", logMessage);
 
         // You can perform the login logic here
-        loginPage.login(username, password);
+        pages.loginPage.login(username, password);
 
         // Additional logging after the login
         String successMessage = "Login attempt successful for username: " + username;
@@ -50,7 +44,7 @@ public class LoginSteps {
 
     @Then("Verify user is on the dashboard page")
     public void verify_user_is_on_the_dashboard_page() {
-        boolean isOnDashboard = dashboardPage.isUserOnDashboard();
+        boolean isOnDashboard = pages.dashBoardPage.isUserOnDashboard();
 
         // Add a log with the result of the verification
         String verificationLog = "User is on dashboard: " + isOnDashboard;
